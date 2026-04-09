@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation';
 import ScrollAnimation, { StaggerContainer, StaggerItem } from '@/ui/ScrollAnimation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useState } from 'react';
 import { IconArrowRight, IconCheck, IconHand, IconBeaker, IconLayers, IconBrick, IconFire, IconCpu, IconTarget, IconWrench } from '@/ui/Icons';
 
 const stats = [
@@ -42,6 +43,8 @@ export default function HomePageClient() {
   const t = useTranslations('home');
   const tHero = useTranslations('hero');
 
+  const [heroVariant, setHeroVariant] = useState<'carbon' | 'classic'>('classic');
+
   const sectors = [
     {
       titleKey: 'industryTitle',
@@ -66,8 +69,22 @@ export default function HomePageClient() {
   return (
     <>
       {/* Hero - carbon texture + red glow */}
-      <section className="relative min-h-[92vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 carbon-texture" />
+      <section className="relative h-screen flex items-center overflow-hidden">
+        {/* Background: carbon photo or subtle texture */}
+        {heroVariant === 'carbon' ? (
+          <div className="absolute inset-0">
+            <Image
+              src="/images/carbon.webp"
+              alt=""
+              fill
+              className="object-cover object-center"
+              priority
+            />
+            <div className="absolute inset-0 bg-dark/70" />
+          </div>
+        ) : (
+          <div className="absolute inset-0 carbon-texture" />
+        )}
         {/* Big red glow */}
         <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-primary/15 rounded-full blur-[150px]" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[120px]" />
@@ -75,12 +92,12 @@ export default function HomePageClient() {
         <div className="absolute top-0 right-[20%] w-[2px] h-full bg-gradient-to-b from-primary/40 via-primary/10 to-transparent transform rotate-12 origin-top" />
 
         <div className="relative max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 w-full py-32">
-          <div className="max-w-3xl">
+          <div className={heroVariant === 'carbon' ? 'text-center max-w-3xl mx-auto' : 'max-w-3xl'}>
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
-              className="red-divider mb-8"
+              className={`red-divider mb-8 ${heroVariant === 'carbon' ? 'mx-auto' : ''}`}
             />
 
             <motion.div
@@ -105,7 +122,7 @@ export default function HomePageClient() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
-              className="text-lg md:text-xl text-text-secondary max-w-xl mb-10 leading-relaxed"
+              className={`text-lg md:text-xl text-text-secondary mb-10 leading-relaxed ${heroVariant === 'carbon' ? 'mx-auto' : 'max-w-xl'}`}
             >
               {tHero('subtitle')}
             </motion.p>
@@ -114,7 +131,7 @@ export default function HomePageClient() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.35 }}
-              className="flex flex-col sm:flex-row gap-4"
+              className={`flex flex-col sm:flex-row gap-4 ${heroVariant === 'carbon' ? 'justify-center' : ''}`}
             >
               <Link href="/references" className="btn-primary">
                 {tHero('cta')}
@@ -126,6 +143,16 @@ export default function HomePageClient() {
             </motion.div>
           </div>
         </div>
+
+        {/* Hero variant toggle */}
+        <button
+          onClick={() => setHeroVariant(heroVariant === 'carbon' ? 'classic' : 'carbon')}
+          className="absolute top-20 right-4 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] text-white/40 hover:text-white/70 hover:bg-white/10 transition-all backdrop-blur-sm"
+        >
+          <span className={heroVariant === 'carbon' ? 'text-primary' : ''}>A</span>
+          <span className="text-white/20">|</span>
+          <span className={heroVariant === 'classic' ? 'text-primary' : ''}>B</span>
+        </button>
 
         {/* Scroll indicator */}
         <motion.div
@@ -167,8 +194,8 @@ export default function HomePageClient() {
             <ScrollAnimation variant="fadeIn">
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-primary/10">
                 <Image
-                  src="/images/parsVnitrni_oblozeni1.jpg"
-                  alt="KMEKI Composites - výroba"
+                  src="/images/building.JPG"
+                  alt="KMEKI Composites - sídlo firmy"
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 50vw"
@@ -206,9 +233,9 @@ export default function HomePageClient() {
           <StaggerContainer className="grid md:grid-cols-3 gap-6">
             {sectors.map((sector, i) => (
               <StaggerItem key={i}>
-                <Link href={sector.href} className="group block">
-                  <div className="rounded-2xl overflow-hidden border border-dark-border hover:border-primary/30 transition-all duration-400 bg-dark-card card-hover-lift">
-                    <div className="relative aspect-[4/3] overflow-hidden">
+                <Link href={sector.href} className="group block h-full">
+                  <div className="rounded-2xl overflow-hidden border border-dark-border hover:border-primary/30 transition-all duration-400 bg-dark-card card-hover-lift h-full flex flex-col">
+                    <div className="relative aspect-[4/3] overflow-hidden shrink-0">
                       <Image
                         src={sector.image}
                         alt=""
@@ -218,11 +245,11 @@ export default function HomePageClient() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-dark-card via-transparent to-transparent" />
                     </div>
-                    <div className="p-6 border-l-3 border-l-primary">
+                    <div className="p-6 border-l-3 border-l-primary flex flex-col grow">
                       <h3 className="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
                         {t(sector.titleKey)}
                       </h3>
-                      <p className="text-text-secondary text-sm leading-relaxed mb-4">
+                      <p className="text-text-secondary text-sm leading-relaxed mb-4 grow">
                         {t(sector.descKey)}
                       </p>
                       <span className="inline-flex items-center gap-1.5 text-primary text-sm font-semibold group-hover:gap-2.5 transition-all duration-300">

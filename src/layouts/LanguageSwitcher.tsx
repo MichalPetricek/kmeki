@@ -7,10 +7,10 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IconChevronDown } from '@/ui/Icons';
 
-const localeLabels: Record<string, string> = {
-  cs: 'CZ',
-  en: 'EN',
-  de: 'DE',
+const localeLabels: Record<string, { label: string; flag: string }> = {
+  cs: { label: 'CZ', flag: '🇨🇿' },
+  en: { label: 'EN', flag: '🇬🇧' },
+  de: { label: 'DE', flag: '🇩🇪' },
 };
 
 export default function LanguageSwitcher() {
@@ -41,11 +41,8 @@ export default function LanguageSwitcher() {
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-text-secondary hover:text-white border border-transparent hover:border-dark-border transition-all"
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 014 9 15 15 0 01-4 9 15 15 0 01-4-9 15 15 0 014-9z" />
-        </svg>
-        <span>{localeLabels[locale]}</span>
+        <span className="text-base leading-none">{localeLabels[locale].flag}</span>
+        <span>{localeLabels[locale].label}</span>
         <IconChevronDown className={`w-3 h-3 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
 
@@ -68,7 +65,8 @@ export default function LanguageSwitcher() {
                     : 'text-text-muted hover:text-white hover:bg-white/[0.04]'
                 }`}
               >
-                {localeLabels[loc]}
+                <span className="text-base leading-none">{localeLabels[loc].flag}</span>
+                {localeLabels[loc].label}
               </button>
             ))}
           </motion.div>
